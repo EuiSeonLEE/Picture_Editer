@@ -8,21 +8,23 @@ using namespace cv;
 using namespace std;
 #define ImgSizeCows 800
 #define ImgSizeRows 547
-#define HisCntStart 1
-#define HisCntEnd 2
-#define HtcCntStart 4
-#define HtcCntEnd 5
+#define HisCntStart 9
+#define HisCntEnd 9
+#define HtcCntStart 6
+#define HtcCntEnd 6
 
 
-Mat Img, ImgClone, TEST_Graph, TEST_Value1, TEST_Value2, TEST_Value3, TEST_Value4;
-int mx1, my1, mx2, my2, mx3, my3;	// 마우스로 지정한 사각형의 좌표*/
+Mat Img, ImgClone, ImgClone2, TEST_Graph, TEST_Value1, TEST_Value2, TEST_Value3, TEST_Value4;;
+int mx1 = 0, my1 = 0, mx2 = 0, my2 = 0, mx3 = 0, my3 = 0;	// 마우스로 지정한 사각형의 좌표*/
 bool Flag = false;
 void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜백 함수
 {
 	if (event == EVENT_LBUTTONDOWN) {	// 마우스의 왼쪽 버튼을 누르면
 		Flag = true;
 		mx1 = x;    my1 = y; 		// 사각형의 좌측 상단 좌표 저장
-		//ImgClone = Img.clone();
+		//imshow("Default", ImgClone2);
+		ImgClone2 = Img.clone();
+		
 	}
 	/*else if (event == EVENT_MOUSEMOVE) {
 		if (Flag == true) {
@@ -50,21 +52,21 @@ void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜�
 			//rectangle(Img, Rect(mx1, my1, mx2 - mx1, my2 - my1), Scalar(0, 255, 0), 1);
 
 			if (mx1 <= mx2) {
-				rectangle(Img, Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1, 8);//value 마다 사각형 표시
-				rectangle(Img, Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(Img, Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(Img, Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+				rectangle(ImgClone2, Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1, 8);//value 마다 사각형 표시
+				rectangle(ImgClone2, Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+				rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+				rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
 			}
 			else if (mx1 > mx2) {
-				rectangle(Img, Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);//value 마다 사각형 표시
-				rectangle(Img, Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(Img, Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(Img, Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+				rectangle(ImgClone2, Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);//value 마다 사각형 표시
+				rectangle(ImgClone2, Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+				rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+				rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
 			}
 
 			cout << "mx1 = " << mx1 << " my1 = " << my1 << ", mx2 = " << mx2 << " my2 = " << my2 << endl;
 			cout << mx2 - mx1 << " , " << my2 - my1 << endl;
-			imshow("Default", Img);
+			imshow("WishArea", ImgClone2);
 		}
 	}
 }
@@ -72,7 +74,6 @@ void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜�
 void main() {
 	String Path, PathDir;
 	String HisName, HtcName,test;
-	//String Path("C:\\HyunBo_TEST\\*.jpg");
 	vector<String> Str;
 
 	//img = imread("C:\\tistory\\tistory.com\\lenna.jpg");
@@ -117,7 +118,20 @@ void main() {
 						cout << Str[c] << endl;
 						Img = imread(Str[c]); //디렉토리에서 가져온 이미지 파일 읽기
 						resize(Img, Img, Size(ImgSizeCows, ImgSizeRows)); //읽어온 이미지 사이즈가 다를 수 있어 (800X547)로 통일
-						imshow("Default", Img);
+						if (mx1 <= mx2) {
+							rectangle(Img, Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1, 8);//value 마다 사각형 표시
+							rectangle(Img, Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+							rectangle(Img, Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+							rectangle(Img, Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+						}
+						else if (mx1 > mx2) {
+							rectangle(Img, Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);//value 마다 사각형 표시
+							rectangle(Img, Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+							rectangle(Img, Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+							rectangle(Img, Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+						}
+						imshow("Main_ScreenShot", Img);
+						
 						//setMouseCallback("Default", onMouse);
 						//rectangle(Img, Rect(115, 408, 230 - 115, 440 - 408), Scalar(0, 255, 0), 1);//value 마다 사각형 표시
 						//rectangle(Img, Rect(230, 408, 345 - 230, 440 - 408), Scalar(0, 255, 0), 1);
@@ -135,11 +149,14 @@ void main() {
 						if (key == 'q') break;	// 사용자가 ‘q’를 누르면 종료(저장X)
 						
 						else if (key == 'w') { //'w'를 누그면 자를 영역을 다시 설정할 수 있다
+							destroyWindow("Main_ScreenShot");//"Main_ScreenShot"창 닫기(Key와 마우스 콜백이 겹쳐지지 않기 위해)
+							imshow("WishArea", Img);
+							cout << "편집할 Value영역을 지정해주세요." << endl;
+							setMouseCallback("WishArea", onMouse);
 							while (1) {
-								cout << "편집할 Value영역을 지정해주세요." << endl;
-								setMouseCallback("Default", onMouse);
 								if (waitKey() == 'e') {
 									cout << "Value영역을 지정 완료하였습니다." << endl;
+									destroyWindow("WishArea");//편집할 관심영역이 설정되면 WishArea창 닫기
 									c--;
 									break;
 								}
@@ -165,7 +182,6 @@ void main() {
 							TEST_Value2.copyTo(TEST_Value2_Sub);
 							//결과 보여주기
 							imshow("result4", Img);
-
 						}
 						else if (key == 'v') {	// 사용자가 ‘v’를 누르면 관심영역을 파일로 저장
 							TEST_Graph = ImgClone(Rect((ImgSizeCows * 2) / 8, 0, ImgSizeCows - ((ImgSizeCows * 4) / 8), my1 - 0));
@@ -261,9 +277,7 @@ void main() {
 
 							imshow("result4", Img);
 							imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장						
-						}
-
-						
+						}						
 					}
 					//Str.clear();
 				}
@@ -271,3 +285,46 @@ void main() {
 		}
 	}
 }
+/*void TakePictureNum(int Num) { //표시할 Value의 갯수를 함수로 나타낼 것
+	Mat TEST_Graph, TEST_Value1, TEST_Value2, TEST_Value3, TEST_Value4;
+	Mat Test_Value[Num]; //Mat 클래스 Num만큼 생성해야함
+	int Cnt = 0;
+	while (Cnt < Num) {
+		TEST_Graph = ImgClone(Rect(150, 0, 650 - 150, 408 - 0));
+		if (mx1 <= mx2) {
+			TEST_Value1 = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
+			TEST_Value1 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 0) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
+			TEST_Value2 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 1) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
+			TEST_Value3 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
+			TEST_Value4 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
+		}
+		else if (mx1 > mx2) {
+			TEST_Value1 = ImgClone(Rect(mx2 - (((mx2 - mx1) * Cnt) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
+			TEST_Value1 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 0) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
+			TEST_Value2 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
+			TEST_Value3 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
+			TEST_Value4 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
+		}
+		resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
+		resize(TEST_Value1, TEST_Value1, Size((Img.cols * 4) / 8, Img.rows / 4));
+		resize(TEST_Value2, TEST_Value2, Size((Img.cols * 4) / 8, Img.rows / 4));
+		resize(TEST_Value3, TEST_Value3, Size((Img.cols * 4) / 8, Img.rows / 4));
+		resize(TEST_Value4, TEST_Value4, Size((Img.cols * 4) / 8, Img.rows / 4));
+
+		Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
+		Mat TEST_Value1_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * Cnt) / 4, TEST_Value1.cols, TEST_Value1.rows));
+		Mat TEST_Value1_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 0) / 4, TEST_Value1.cols, TEST_Value1.rows));
+		Mat TEST_Value2_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 1) / 4, TEST_Value2.cols, TEST_Value2.rows));
+		Mat TEST_Value3_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 2) / 4, TEST_Value3.cols, TEST_Value3.rows));
+		Mat TEST_Value4_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 3) / 4, TEST_Value4.cols, TEST_Value4.rows));
+
+		TEST_Graph.copyTo(TEST_Graph_Sub);
+		TEST_Value1.copyTo(TEST_Value1_Sub);
+		TEST_Value2.copyTo(TEST_Value2_Sub);
+		TEST_Value3.copyTo(TEST_Value3_Sub);
+		TEST_Value4.copyTo(TEST_Value4_Sub);
+
+		imshow("result4", Img);
+		imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장				
+	}
+}*/

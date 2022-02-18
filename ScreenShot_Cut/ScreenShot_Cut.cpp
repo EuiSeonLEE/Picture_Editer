@@ -6,15 +6,15 @@
 #include <cmath> 
 using namespace cv;
 using namespace std;
-#define ImgSizeCows 800
-#define ImgSizeRows 547
-#define HisCntStart 9
-#define HisCntEnd 9
-#define HtcCntStart 6
-#define HtcCntEnd 6
+#define ImgSizeCows 800 //원본 이미지 가로길이
+#define ImgSizeRows 547 //원본 이미지 세로길이
+#define HisCntStart 3   //His 몇번째부터
+#define HisCntEnd 3		//His 몇번째까지
+#define HtcCntStart 1	//Htc 몇번째부터
+#define HtcCntEnd 1		//Htc 몇번째까지
 
-
-Mat Img, ImgClone, ImgClone2, TEST_Graph, TEST_Value1, TEST_Value2, TEST_Value3, TEST_Value4;;
+Mat Img, ImgClone, ImgClone2;
+String Path, PathDir, FileName;
 int mx1 = 0, my1 = 0, mx2 = 0, my2 = 0, mx3 = 0, my3 = 0;	// 마우스로 지정한 사각형의 좌표*/
 bool Flag = false;
 void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜백 함수
@@ -22,9 +22,7 @@ void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜�
 	if (event == EVENT_LBUTTONDOWN) {	// 마우스의 왼쪽 버튼을 누르면
 		Flag = true;
 		mx1 = x;    my1 = y; 		// 사각형의 좌측 상단 좌표 저장
-		//imshow("Default", ImgClone2);
 		ImgClone2 = Img.clone();
-		
 	}
 	/*else if (event == EVENT_MOUSEMOVE) {
 		if (Flag == true) {
@@ -48,9 +46,6 @@ void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜�
 		if (Flag == true) {
 			Flag = false;
 			mx2 = x;    my2 = y;       	// 사각형의 우측 하단 좌표 저장
-			//rectangle(Img, Point(mx1, my1), Point(mx2, my2), Scalar(0, 255, 0), 1);
-			//rectangle(Img, Rect(mx1, my1, mx2 - mx1, my2 - my1), Scalar(0, 255, 0), 1);
-
 			if (mx1 <= mx2) {
 				rectangle(ImgClone2, Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1, 8);//value 마다 사각형 표시
 				rectangle(ImgClone2, Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
@@ -71,11 +66,55 @@ void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜�
 	}
 }
 
-void main() {
-	String Path, PathDir;
-	String HisName, HtcName,test;
-	vector<String> Str;
+void TakeValueNum(int Num) { //표시할 Value의 갯수 함수
+	Mat TEST_Graph, TEST_Value;
+	int Cnt = 0;
+	//그래프 부분 자르고 붙이기
+	TEST_Graph = ImgClone(Rect(150, 0, 650 - 150, 408 - 0));
+	resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
+	Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
+	TEST_Graph.copyTo(TEST_Graph_Sub);
+	//Value 부분 자르고 붙이기
+	while (Cnt < Num) {
+		if (mx1 <= mx2) {
+			TEST_Value = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
+		}
+		else if (mx1 > mx2) {
+			TEST_Value = ImgClone(Rect(mx2 - (((mx2 - mx1) * Cnt) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
+		}
+		resize(TEST_Value, TEST_Value, Size((Img.cols * 4) / 8, Img.rows / Num));
+		Mat TEST_Value_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * Cnt) / Num, TEST_Value.cols, TEST_Value.rows));
 
+		TEST_Value.copyTo(TEST_Value_Sub);
+		Cnt++;
+	}
+	imshow("result4", Img);
+	imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장						
+}
+
+void MakeDirPath(int FirstDir, int SecondDir) { //편집할 이미지를 읽고 쓰기 위한 주소 변환 함수
+	String HisName, HtcName;
+	if (FirstDir < 10 && SecondDir < 10) {//디렉토리 이름 바꾸기
+		HisName = String("HIS_0" + to_string(FirstDir));
+		HtcName = String("HTC_0" + to_string(FirstDir) + "0" + to_string(SecondDir));
+	}
+	else if (FirstDir < 10) {
+		HisName = String("HIS_0" + to_string(FirstDir));
+		HtcName = String("HTC_0" + to_string(FirstDir) + to_string(SecondDir));
+	}
+	else if (SecondDir < 10) {
+		HisName = String("HIS_" + to_string(FirstDir));
+		HtcName = String("HTC_" + to_string(FirstDir) + "0" + to_string(SecondDir));
+	}
+	else
+		HtcName = String("HTC_" + to_string(FirstDir) + to_string(SecondDir));
+
+	Path = String("C:\\HyunBo_TEST\\" + HisName + "\\" + HtcName + "\\*.jpg");//해당 디렉토리의 .jpg파일을 전부 읽어 Vector<String>배열에 저장
+	PathDir = String("C:\\HyunBo_TEST\\" + HisName + "\\" + HtcName);//디렉토리 존재 여부를 위해 주소 저장0
+}
+void main() {
+	vector<String> Str;
+	
 	//img = imread("C:\\tistory\\tistory.com\\lenna.jpg");
 	//정렬
 	//glob(Path, Str, false);
@@ -92,23 +131,7 @@ void main() {
 	//cout << "HIS 이름 : " << HisName << "\nHTC 이름 : " << HtcName << "\nHIS 번호 : " << HisNum << endl;
 	for (int a = HisCntStart; a <= HisCntEnd; a++) {//범위
 		for (int b = HtcCntStart; b <= HtcCntEnd; b++) {
-			if (a < 10 && b < 10) {//디렉토리 이름 바꾸기
-				HisName = String("HIS_0" + to_string(a));
-				HtcName = String("HTC_0" + to_string(a) + "0" + to_string(b));
-			}
-			else if (a < 10) {
-				HisName = String("HIS_0" + to_string(a));
-				HtcName = String("HTC_0" + to_string(a) + to_string(b));
-			}
-			else if (b < 10) {
-				HisName = String("HIS_" + to_string(a));
-				HtcName = String("HTC_" + to_string(a) + "0" + to_string(b));
-			}
-			else 
-				HtcName = String("HTC_" + to_string(a) + to_string(b));
-
-			Path = String("C:\\HyunBo_TEST\\" + HisName + "\\" + HtcName + "\\*.jpg");//해당 디렉토리의 .jpg파일을 전부 읽어 Vector<String>배열에 저장
-			PathDir = String("C:\\HyunBo_TEST\\" + HisName + "\\" + HtcName);//디렉토리 존재 여부를 위해 주소 저장0
+			MakeDirPath(a, b);
 			//test = String("C:\\HyunBo_TEST\\" + HisName + "\\" + HtcName + "\\*.jpg");
 			//cout << Path << endl;
 			if (access(PathDir.c_str(), 0) != -1) { //디렉토리 존재여부 판단(-1이면 없는 거)
@@ -131,17 +154,10 @@ void main() {
 							rectangle(Img, Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
 						}
 						imshow("Main_ScreenShot", Img);
-						
-						//setMouseCallback("Default", onMouse);
-						//rectangle(Img, Rect(115, 408, 230 - 115, 440 - 408), Scalar(0, 255, 0), 1);//value 마다 사각형 표시
-						//rectangle(Img, Rect(230, 408, 345 - 230, 440 - 408), Scalar(0, 255, 0), 1);
-						//rectangle(Img, Rect(345, 408, 460 - 345, 440 - 408), Scalar(0, 255, 0), 1);
-						//rectangle(Img, Rect(460, 408, 575 - 460, 440 - 408), Scalar(0, 255, 0), 1);
-						ImgClone = Img.clone();
-						
+						ImgClone = Img.clone();//원본 깊은 복사
 
 						//파일 이름만 저장
-						String FileName = Str[c].substr(Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1, Str[c].find(".jpg") - (Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1));
+						FileName = Str[c].substr(Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1, Str[c].find(".jpg") - (Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1));
 						cout << Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1 << "\n" << Str[c].find(".jpg") <<"\n"<< c << endl;
 
 						int key = waitKey(); //Key를 누를 때까지 기다림
@@ -162,8 +178,7 @@ void main() {
 								}
 							}
 						}
-
-						else if (key == 'c') {	// 사용자가 ‘c’를 누르면 관심영역을 파일로 저장
+						/*else if (key == 'c') {	// 사용자가 ‘c’를 누르면 관심영역을 파일로 저장
 							//자르기
 							TEST_Graph = ImgClone(Rect(150, 0, 650 - 150, 408 - 0));
 							TEST_Value1 = ImgClone(Rect(4, 458, 101 - 4, 546 - 458));
@@ -182,101 +197,15 @@ void main() {
 							TEST_Value2.copyTo(TEST_Value2_Sub);
 							//결과 보여주기
 							imshow("result4", Img);
-						}
+						}*/
 						else if (key == 'v') {	// 사용자가 ‘v’를 누르면 관심영역을 파일로 저장
-							TEST_Graph = ImgClone(Rect((ImgSizeCows * 2) / 8, 0, ImgSizeCows - ((ImgSizeCows * 4) / 8), my1 - 0));
-							if (mx1 <= mx2) {
-								TEST_Value1 = ImgClone(Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1));
-								TEST_Value2 = ImgClone(Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-								
-							}
-							else if (mx1 > mx2) {
-								TEST_Value1 = ImgClone(Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1));
-								TEST_Value2 = ImgClone(Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-							}
-
-							resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
-							resize(TEST_Value1, TEST_Value1, Size((Img.cols * 4) / 8, Img.rows / 2));
-							resize(TEST_Value2, TEST_Value2, Size((Img.cols * 4) / 8, Img.rows / 2));
-
-							Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
-							Mat TEST_Value1_Sub(Img, Rect(TEST_Graph.cols, 0, TEST_Value1.cols, TEST_Value1.rows));
-							Mat TEST_Value2_Sub(Img, Rect(TEST_Graph.cols, Img.rows / 2, TEST_Value2.cols, TEST_Value2.rows));
-
-							TEST_Graph.copyTo(TEST_Graph_Sub);
-							TEST_Value1.copyTo(TEST_Value1_Sub);
-							TEST_Value2.copyTo(TEST_Value2_Sub);
-
-							imshow("result4", Img);
-							imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장						
+							TakeValueNum(2);
 						}
 						else if (key == 'b') {	// 사용자가 ‘b’를 누르면 관심영역을 파일로 저장
-							TEST_Graph = ImgClone(Rect(150, 0, 650 - 150, 408 - 0));
-							if (mx1 <= mx2) {
-								TEST_Value1 = ImgClone(Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1));
-								TEST_Value2 = ImgClone(Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-								TEST_Value3 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-								
-							}
-							else if (mx1 > mx2) {
-								TEST_Value1 = ImgClone(Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1));
-								TEST_Value2 = ImgClone(Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-								TEST_Value3 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-								
-							}
-
-							resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
-							resize(TEST_Value1, TEST_Value1, Size((Img.cols * 4) / 8, Img.rows / 3));
-							resize(TEST_Value2, TEST_Value2, Size((Img.cols * 4) / 8, Img.rows / 3));
-							resize(TEST_Value3, TEST_Value3, Size((Img.cols * 4) / 8, Img.rows / 3));
-
-							Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
-							Mat TEST_Value1_Sub(Img, Rect(TEST_Graph.cols, 0, TEST_Value1.cols, TEST_Value1.rows));
-							Mat TEST_Value2_Sub(Img, Rect(TEST_Graph.cols, Img.rows / 3, TEST_Value2.cols, TEST_Value2.rows));
-							Mat TEST_Value3_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 2) / 3, TEST_Value3.cols, TEST_Value3.rows));
-
-							TEST_Graph.copyTo(TEST_Graph_Sub);
-							TEST_Value1.copyTo(TEST_Value1_Sub);
-							TEST_Value2.copyTo(TEST_Value2_Sub);
-							TEST_Value3.copyTo(TEST_Value3_Sub);
-
-							imshow("result4", Img);
-							imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장						
+							TakeValueNum(3);
 						}
 						else if (key == 'n') {	// 사용자가 ‘n’를 누르면 관심영역을 파일로 저장
-							TEST_Graph = ImgClone(Rect(150, 0, 650 - 150, 408 - 0));
-							if (mx1 <= mx2) {
-								TEST_Value1 = ImgClone(Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1));
-								TEST_Value2 = ImgClone(Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-								TEST_Value3 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-								TEST_Value4 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-							}
-							else if (mx1 > mx2) {
-								TEST_Value1 = ImgClone(Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1));
-								TEST_Value2 = ImgClone(Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-								TEST_Value3 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-								TEST_Value4 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-							}
-							resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
-							resize(TEST_Value1, TEST_Value1, Size((Img.cols * 4) / 8, Img.rows / 4));
-							resize(TEST_Value2, TEST_Value2, Size((Img.cols * 4) / 8, Img.rows / 4));
-							resize(TEST_Value3, TEST_Value3, Size((Img.cols * 4) / 8, Img.rows / 4));
-							resize(TEST_Value4, TEST_Value4, Size((Img.cols * 4) / 8, Img.rows / 4));
-
-							Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
-							Mat TEST_Value1_Sub(Img, Rect(TEST_Graph.cols, 0, TEST_Value1.cols, TEST_Value1.rows));
-							Mat TEST_Value2_Sub(Img, Rect(TEST_Graph.cols, Img.rows / 4, TEST_Value2.cols, TEST_Value2.rows));
-							Mat TEST_Value3_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 2) / 4, TEST_Value3.cols, TEST_Value3.rows));
-							Mat TEST_Value4_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 3) / 4, TEST_Value4.cols, TEST_Value4.rows));
-
-							TEST_Graph.copyTo(TEST_Graph_Sub);
-							TEST_Value1.copyTo(TEST_Value1_Sub);
-							TEST_Value2.copyTo(TEST_Value2_Sub);
-							TEST_Value3.copyTo(TEST_Value3_Sub);
-							TEST_Value4.copyTo(TEST_Value4_Sub);
-
-							imshow("result4", Img);
-							imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장						
+							TakeValueNum(4);
 						}						
 					}
 					//Str.clear();
@@ -285,46 +214,3 @@ void main() {
 		}
 	}
 }
-/*void TakePictureNum(int Num) { //표시할 Value의 갯수를 함수로 나타낼 것
-	Mat TEST_Graph, TEST_Value1, TEST_Value2, TEST_Value3, TEST_Value4;
-	Mat Test_Value[Num]; //Mat 클래스 Num만큼 생성해야함
-	int Cnt = 0;
-	while (Cnt < Num) {
-		TEST_Graph = ImgClone(Rect(150, 0, 650 - 150, 408 - 0));
-		if (mx1 <= mx2) {
-			TEST_Value1 = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-			TEST_Value1 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 0) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-			TEST_Value2 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 1) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-			TEST_Value3 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-			TEST_Value4 = ImgClone(Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
-		}
-		else if (mx1 > mx2) {
-			TEST_Value1 = ImgClone(Rect(mx2 - (((mx2 - mx1) * Cnt) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-			TEST_Value1 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 0) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-			TEST_Value2 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-			TEST_Value3 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-			TEST_Value4 = ImgClone(Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
-		}
-		resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
-		resize(TEST_Value1, TEST_Value1, Size((Img.cols * 4) / 8, Img.rows / 4));
-		resize(TEST_Value2, TEST_Value2, Size((Img.cols * 4) / 8, Img.rows / 4));
-		resize(TEST_Value3, TEST_Value3, Size((Img.cols * 4) / 8, Img.rows / 4));
-		resize(TEST_Value4, TEST_Value4, Size((Img.cols * 4) / 8, Img.rows / 4));
-
-		Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
-		Mat TEST_Value1_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * Cnt) / 4, TEST_Value1.cols, TEST_Value1.rows));
-		Mat TEST_Value1_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 0) / 4, TEST_Value1.cols, TEST_Value1.rows));
-		Mat TEST_Value2_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 1) / 4, TEST_Value2.cols, TEST_Value2.rows));
-		Mat TEST_Value3_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 2) / 4, TEST_Value3.cols, TEST_Value3.rows));
-		Mat TEST_Value4_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * 3) / 4, TEST_Value4.cols, TEST_Value4.rows));
-
-		TEST_Graph.copyTo(TEST_Graph_Sub);
-		TEST_Value1.copyTo(TEST_Value1_Sub);
-		TEST_Value2.copyTo(TEST_Value2_Sub);
-		TEST_Value3.copyTo(TEST_Value3_Sub);
-		TEST_Value4.copyTo(TEST_Value4_Sub);
-
-		imshow("result4", Img);
-		imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장				
-	}
-}*/

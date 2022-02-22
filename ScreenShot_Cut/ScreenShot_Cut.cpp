@@ -8,8 +8,8 @@ using namespace cv;
 using namespace std;
 #define ImgSizeCows 800 //원본 이미지 가로길이
 #define ImgSizeRows 547 //원본 이미지 세로길이
-#define HisCntStart 3   //His 몇번째부터
-#define HisCntEnd 3		//His 몇번째까지
+#define HisCntStart 8   //His 몇번째부터
+#define HisCntEnd 8		//His 몇번째까지
 #define HtcCntStart 1	//Htc 몇번째부터
 #define HtcCntEnd 1		//Htc 몇번째까지
 

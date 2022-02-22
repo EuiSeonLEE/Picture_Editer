@@ -6,12 +6,13 @@
 #include <cmath> 
 using namespace cv;
 using namespace std;
+#define ValueDivideNum 6
 #define ImgSizeCows 800 //원본 이미지 가로길이
 #define ImgSizeRows 547 //원본 이미지 세로길이
-#define HisCntStart 8   //His 몇번째부터
-#define HisCntEnd 8		//His 몇번째까지
-#define HtcCntStart 1	//Htc 몇번째부터
-#define HtcCntEnd 1		//Htc 몇번째까지
+#define HisCntStart 9   //His 몇번째부터
+#define HisCntEnd 9 	//His 몇번째까지
+#define HtcCntStart 4	//Htc 몇번째부터
+#define HtcCntEnd 4		//Htc 몇번째까지
 
 Mat Img, ImgClone, ImgClone2;
 String Path, PathDir, FileName;
@@ -45,20 +46,22 @@ void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜�
 	else if (event == EVENT_LBUTTONUP) {	// 마우스의 왼쪽 버튼에서 손을 떼면
 		if (Flag == true) {
 			Flag = false;
+			int MakeRectCnt = 0;
 			mx2 = x;    my2 = y;       	// 사각형의 우측 하단 좌표 저장
 			if (mx1 <= mx2) {
-				rectangle(ImgClone2, Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1, 8);//value 마다 사각형 표시
-				rectangle(ImgClone2, Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+				while (MakeRectCnt < ValueDivideNum) {
+
+					rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+					MakeRectCnt++;
+				}
 			}
 			else if (mx1 > mx2) {
-				rectangle(ImgClone2, Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);//value 마다 사각형 표시
-				rectangle(ImgClone2, Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-				rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-			}
+				while (MakeRectCnt < ValueDivideNum) {
 
+					rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+					MakeRectCnt++;
+				}
+			}
 			cout << "mx1 = " << mx1 << " my1 = " << my1 << ", mx2 = " << mx2 << " my2 = " << my2 << endl;
 			cout << mx2 - mx1 << " , " << my2 - my1 << endl;
 			imshow("WishArea", ImgClone2);
@@ -70,17 +73,17 @@ void TakeValueNum(int Num) { //표시할 Value의 갯수 함수
 	Mat TEST_Graph, TEST_Value;
 	int Cnt = 0;
 	//그래프 부분 자르고 붙이기
-	TEST_Graph = ImgClone(Rect(150, 0, 650 - 150, 408 - 0));
+	TEST_Graph = ImgClone(Rect((ImgSizeCows * 4) / 16, 0, (ImgSizeCows - (ImgSizeCows * 4) / 16) - (ImgSizeCows * 2) / 16, ImgSizeRows - (ImgSizeRows - my1)));
 	resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
 	Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
 	TEST_Graph.copyTo(TEST_Graph_Sub);
 	//Value 부분 자르고 붙이기
 	while (Cnt < Num) {
 		if (mx1 <= mx2) {
-			TEST_Value = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / 4), my1, (mx2 - mx1) / 4, my2 - my1));
+			TEST_Value = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1));
 		}
 		else if (mx1 > mx2) {
-			TEST_Value = ImgClone(Rect(mx2 - (((mx2 - mx1) * Cnt) / 4), my1, -(mx2 - mx1) / 4, my2 - my1));
+			TEST_Value = ImgClone(Rect(mx2 - (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1));
 		}
 		resize(TEST_Value, TEST_Value, Size((Img.cols * 4) / 8, Img.rows / Num));
 		Mat TEST_Value_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * Cnt) / Num, TEST_Value.cols, TEST_Value.rows));
@@ -114,7 +117,7 @@ void MakeDirPath(int FirstDir, int SecondDir) { //편집할 이미지를 읽고 
 }
 void main() {
 	vector<String> Str;
-	
+
 	//img = imread("C:\\tistory\\tistory.com\\lenna.jpg");
 	//정렬
 	//glob(Path, Str, false);
@@ -127,7 +130,7 @@ void main() {
 	//String HisNum = HisName.substr(HisName.length() - 2, 2);
 	//String HtcNum = HisName.substr(HtcName.length() - 4, 4);
 	//String HisName = String("HIS_0" + to_string(1));
-	
+
 	//cout << "HIS 이름 : " << HisName << "\nHTC 이름 : " << HtcName << "\nHIS 번호 : " << HisNum << endl;
 	for (int a = HisCntStart; a <= HisCntEnd; a++) {//범위
 		for (int b = HtcCntStart; b <= HtcCntEnd; b++) {
@@ -141,29 +144,33 @@ void main() {
 						cout << Str[c] << endl;
 						Img = imread(Str[c]); //디렉토리에서 가져온 이미지 파일 읽기
 						resize(Img, Img, Size(ImgSizeCows, ImgSizeRows)); //읽어온 이미지 사이즈가 다를 수 있어 (800X547)로 통일
+						int MakeRectCnt = 0;
 						if (mx1 <= mx2) {
-							rectangle(Img, Rect(mx1, my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1, 8);//value 마다 사각형 표시
-							rectangle(Img, Rect(mx1 + ((mx2 - mx1) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-							rectangle(Img, Rect(mx1 + (((mx2 - mx1) * 2) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-							rectangle(Img, Rect(mx1 + (((mx2 - mx1) * 3) / 4), my1, (mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+
+							while (MakeRectCnt < ValueDivideNum) {
+
+								rectangle(Img, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+								MakeRectCnt++;
+							}
 						}
 						else if (mx1 > mx2) {
-							rectangle(Img, Rect(mx2, my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);//value 마다 사각형 표시
-							rectangle(Img, Rect(mx2 - ((mx2 - mx1) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-							rectangle(Img, Rect(mx2 - (((mx2 - mx1) * 2) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
-							rectangle(Img, Rect(mx2 - (((mx2 - mx1) * 3) / 4), my1, -(mx2 - mx1) / 4, my2 - my1), Scalar(0, 255, 0), 1);
+							while (MakeRectCnt < ValueDivideNum) {
+
+								rectangle(Img, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+								MakeRectCnt++;
+							}
 						}
 						imshow("Main_ScreenShot", Img);
 						ImgClone = Img.clone();//원본 깊은 복사
 
 						//파일 이름만 저장
 						FileName = Str[c].substr(Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1, Str[c].find(".jpg") - (Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1));
-						cout << Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1 << "\n" << Str[c].find(".jpg") <<"\n"<< c << endl;
+						cout << Str[c].find("\\", Str[c].find("\\", Str[c].find("\\", Str[c].find("\\") + 1) + 1) + 1) + 1 << "\n" << Str[c].find(".jpg") << "\n" << c << endl;
 
 						int key = waitKey(); //Key를 누를 때까지 기다림
 
 						if (key == 'q') break;	// 사용자가 ‘q’를 누르면 종료(저장X)
-						
+
 						else if (key == 'w') { //'w'를 누그면 자를 영역을 다시 설정할 수 있다
 							destroyWindow("Main_ScreenShot");//"Main_ScreenShot"창 닫기(Key와 마우스 콜백이 겹쳐지지 않기 위해)
 							imshow("WishArea", Img);
@@ -206,7 +213,10 @@ void main() {
 						}
 						else if (key == 'n') {	// 사용자가 ‘n’를 누르면 관심영역을 파일로 저장
 							TakeValueNum(4);
-						}						
+						}
+						else if (key == 'm') {	// 사용자가 ‘m’를 누르면 관심영역을 파일로 저장
+							TakeValueNum(5);
+						}
 					}
 					//Str.clear();
 				}

@@ -17,10 +17,10 @@
 
 ## 4. 핵심기능
 
-이 프로그램의 **핵심 기능은 oscilloscope의 measure value값들이 포함된 screenshot을 measure value값개수에 따라 사진을 편집할 수 있는 기능**입니다.<br/>
-LrCroy Corporation사의 **oscilloscope 인터페이스**는 measure value값 폰트를 확대하는 기능이 없어 제작하게된 이미지 편집 Application입니다.<br/>
-원하는 direcotry내의 image file을 읽어 screenshot의 measure value값이 있는 영역을 확대하여 그래프와 함게 보이도록 새로 편집됩니다.<br/>
-이를 통해 문서정리를 통해 H/W Test 증거자료로 담아낼 때 한 페이지에 여러개 붙여도 **oscilloscope의 measure value값이** 잘보인다는 장점이 있습니다.<br/>
+- 이 프로그램의 **핵심 기능은 oscilloscope의 measure value값들이 포함된 screenshot을 measure value값개수에 따라 사진을 편집할 수 있는 기능**입니다.<br/>
+- LrCroy Corporation사의 **oscilloscope 인터페이스**는 measure value값 폰트를 확대하는 기능이 없어 제작하게된 이미지 편집 Application입니다.<br/>
+- 원하는 direcotry내의 image file을 읽어 screenshot의 measure value값이 있는 영역을 확대하여 그래프와 함게 보이도록 새로 편집됩니다.<br/>
+- 이를 통해 문서정리를 통해 H/W Test 증거자료로 담아낼 때 한 페이지에 여러개 붙여도 **oscilloscope의 measure value값이** 잘보인다는 장점이 있습니다.<br/>
 
 <details>
 <summary> :mag_right: 핵심 기능 설명 펼치기 </summary>

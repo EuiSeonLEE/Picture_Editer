@@ -34,11 +34,11 @@ HIS와 HTC를 정렬하여 directory를 만들고 HTC폴더마다 oscilloscope s
 ### 4.2 directory 처리
 정렬된 directory의 이름을 읽어 directory 내의 image file을 읽기 위해 **glob()**함수를 사용합니다.
 **glob()**함수를 사용하기 위해서는 directory주소를 문자열로 기입시켜야 함으로 문자열 처리를 위해 **MakeDirPath()**함수를 만들어 주었습니다.
-문자열 처리를 하여 glob()로 해당 directory내의 image file을 전부 차례대로 불러옵니다.
+문자열 처리를 하여 **cv::glob()**로 해당 directory내의 image file을 전부 차례대로 불러옵니다.
 편집이 종료된 편집본 image file은 문자열을 추가하여 해당 directory 내에 편집본을 저장시킵니다.
 
 ### 4.3 MouseCallback
-관심영역을 선택하여 편집을 해야하기 때문에 setMouseCallback()함수를 사용하여 관심영역을 그립니다.
+관심영역을 선택하여 편집을 해야하기 때문에 **cv::setMouseCallback()**함수를 사용하여 관심영역을 그립니다.
 몇개의 measure value를 편집하느냐에 따라 관심영역 내 사각형이 몇개 그려질지 결정됩니다.
 
 ### 4.4 image edit
@@ -51,19 +51,47 @@ HIS와 HTC를 정렬하여 directory를 만들고 HTC폴더마다 oscilloscope s
 
 ## 5. 핵심 트러블 슈팅
 ### 5.1 glob()함수 오류 방지
-- directory에서 image file이 존재하지 않을 경우 glob()함수는 오류 발생 동시에 프로그램을 끝내버립니다.
-- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 glob()함수의 오류발생을 예방합니다.
+- directory에서 image file이 존재하지 않을 경우 **cv::glob()**함수는 오류 발생 동시에 프로그램을 끝내버립니다.
+  
+<details>
+<summary style="font-Weight : bold; font-size : 15px; color : #E43914;"> :confused: 기존 코드</summary>
+<div markdown="1">  
+
+```c++
+    glob(Path, Str, false); //Path주소의 이미지 파일 주소 및 이름 저장(만약 디렉토리가 없다면 오류 걸림)
+    if (Str.size() > 0) { //해당 디렉토리의 image 파일 존재유무
+        for (int c = 0; c < Str.size(); c++) {
+            cout << Str[c] << endl;
+            Img = imread(Str[c]); //디렉토리에서 가져온 이미지 파일 읽기
+            ...
+            //image file 편집 알고리즘
+            ...
+        }
+    }
+```
+</div>
+</details>
+<br/>
+
+- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 **cv::glob()**함수의 오류발생을 예방합니다.
+  
   <details>
    <summary style="font-Weight : bold; font-size : 15px; color : #E43914;"> :smile: 개선된 코드 </summary>
    <div markdown="1">  
 
 
-   ```c
+   ```c++
    if (access(PathDir.c_str(), 0) != -1) { //디렉토리 존재여부 판단(-1이면 없는 거)
         glob(Path, Str, false); //Path주소의 이미지 파일 주소 및 이름 저장(만약 디렉토리가 없다면 오류 걸림)
-        ...
-        //image file 편집 알고리즘
-        ...
+        if (Str.size() > 0) { //해당 디렉토리의 image 파일 존재유무
+            for (int c = 0; c < Str.size(); c++) {
+                cout << Str[c] << endl;
+                Img = imread(Str[c]); //디렉토리에서 가져온 이미지 파일 읽기
+                ...
+                //image file 편집 알고리즘
+                ...
+            }
+        }
    }
    
    ```

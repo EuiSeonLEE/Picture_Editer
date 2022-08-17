@@ -73,7 +73,7 @@
     </details>
     <br/>
 
-- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 **cv::glob()**함수의 오류발생을 예방합니다.
+- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 **cv::glob**함수의 오류발생을 예방합니다.
   
   <details>
    <summary style="font-Weight : bold; font-size : 15px; color : #E43914;"> :smile: 개선된 코드 </summary>

@@ -41,7 +41,7 @@
 - 관심영역을 선택하여 편집을 해야하기 때문에 **cv::setMouseCallback**클래스를 사용하여 관심영역을 그립니다.
 - 몇개의 measure value를 편집하느냐에 따라 관심영역 내 사각형이 몇개 그려질지 결정됩니다.
     <details>
-   <summary> 마우스로 사각형 그린 결과 </summary>
+   <summary> 🖼️ 마우스로 사각형 그린 결과 </summary>
    <div markdown="1"> 
 
      ![image](https://user-images.githubusercontent.com/84891209/185345507-0d5f8ee9-b639-4f99-98bf-6caa0556c18b.png)

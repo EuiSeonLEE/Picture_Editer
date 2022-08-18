@@ -119,7 +119,9 @@
 
     - 마우스로 관심영역을 지정할 때 마우스 왼측 클릭 후 움직이면 사각형이 마우스 끝을 따라다니며 시각적으로 관심영역을 지정시키는 GUI를 구현하려 했으나
     - Image file을 창으로 불러내는 것이기 때문에 **cv::MouseMove**클래스를 사용하더라도 영역이 사진에 계속 그려지는 현상이 생깁니다. 
-      ![image](https://user-images.githubusercontent.com/84891209/185293043-412185f7-3c2d-45ce-ac5c-5e23930503c1.png)
+     ![image](https://user-images.githubusercontent.com/84891209/185293115-50d573b2-8842-460d-9149-536597dc4a64.png)
+ 
+     
 
    </div>
    </details>

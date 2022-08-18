@@ -120,7 +120,9 @@
     만들져 원하는 부분을 편집할 시 오류가 발생했습니다.
 - 이를 **Deep copy**로 전환하고 아예 **새로운 데이터 만들어** 내 편집 후 <br/>
     다시 붙여 넣는 방식을 선택하여 오류를 방지하였습니다.
+![image](https://user-images.githubusercontent.com/84891209/185350854-d1a2ff59-c27f-47c0-bd43-aead7d563181.png)
 
+    
 </div>
 </details>
 <br/>

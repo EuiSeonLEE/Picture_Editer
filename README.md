@@ -41,7 +41,7 @@
 - 관심영역을 선택하여 편집을 해야하기 때문에 **cv::setMouseCallback**클래스를 사용하여 관심영역을 그립니다.
 - 몇개의 measure value를 편집하느냐에 따라 관심영역 내 사각형이 몇개 그려질지 결정됩니다.
     <details>
-   <summary> 🖼️ 마우스로 사각형 그린 결과 </summary>
+   <summary> 마우스로 사각형 그린 결과 </summary>
    <div markdown="1"> 
 
      ![image](https://user-images.githubusercontent.com/84891209/185345507-0d5f8ee9-b639-4f99-98bf-6caa0556c18b.png)
@@ -53,7 +53,7 @@
 
 ### 4.4 image edit [:pushpin:코드 확인](https://github.com/EuiSeonLEE/Picture_Editer/blob/041c9ff9838e3adaaeb777372650113015baf520/ScreenShot_Cut/ScreenShot_Cut.cpp#L86-L120)
 불러온 directory 내의 screenshot image를 작을 화소로도 잘 보이도록 measure value값과 그래프가 편집을 시킵니다.
-2~6개의 measure value개수를 조절하여 image를 편집합니다.
+2~6개의 measure value개수를  7조절하여 image를 편집합니다.
 
 </div>
 </details>
@@ -145,9 +145,9 @@
 
 ## 7. 결과물
 ### 편집 전(원본)
-![LeCroy4](https://user-images.githubusercontent.com/84891209/185345768-9549d234-26f0-45e9-b7a2-9a6d35811b30.jpg)
+![원본](https://user-images.githubusercontent.com/84891209/185345768-9549d234-26f0-45e9-b7a2-9a6d35811b30.jpg)
 
 ### 편집 후(편집본)
-![LeCroy4_ScreenShot_Cut](https://user-images.githubusercontent.com/84891209/185345854-a68bedad-b19a-43a1-8bb6-8ce25d93eeb5.jpg)
+![편집본](https://user-images.githubusercontent.com/84891209/185345854-a68bedad-b19a-43a1-8bb6-8ce25d93eeb5.jpg)
 
 

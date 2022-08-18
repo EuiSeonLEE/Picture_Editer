@@ -59,7 +59,7 @@
 <br/>
 
 ## 5. 핵심 트러블 슈팅
-### 5.1 glob()함수 오류 방지
+### 5.1 cv::glob함수 오류 방지
 - directory에서 image file이 존재하지 않을 경우 **cv::glob()**함수는 오류 발생 동시에 프로그램을 끝내버립니다.
   
     <details>
@@ -82,7 +82,7 @@
     </details>
     <br/>
 
-- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 **cv::glob()**함수의 오류발생을 예방합니다.
+- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 **cv::glob**함수의 오류발생을 예방합니다.
   
   <details>
    <summary style="font-Weight : bold; font-size : 15px; color : #E43914;"> :smile: 개선된 코드 </summary>
@@ -115,8 +115,10 @@
    <summary> shallow copy(얕은 복사) & Deep copy(깊은 복사) </summary>
    <div markdown="1"> 
 
-    - **shallow copy**를 하게 된다면 **원본의 데이터를 참조**하는 포인터 변수가 만들져 원하는 부분을 편집할 시 오류가 발생했습니다.
-    - 이를 **Deep copy**로 전환하고 아예 **새로운 데이터 만들어** 내 편집 후 다시 붙여 넣는 방식을 선택하여 오류를 방지하였습니다.
+    - **shallow copy**를 하게 된다면 **원본의 데이터를 참조**하는 포인터 변수가 <br/>
+        만들져 원하는 부분을 편집할 시 오류가 발생했습니다.
+    - 이를 **Deep copy**로 전환하고 아예 **새로운 데이터 만들어** 내 편집 후 <br/>
+        다시 붙여 넣는 방식을 선택하여 오류를 방지하였습니다.
 
    </div>
    </details>
@@ -128,7 +130,8 @@
 
     - 마우스로 관심영역을 지정할 때 마우스 왼측 클릭 후 움직이면 사각형이 마우스 끝을 따라다니며 <br/>
       시각적으로 관심영역을 지정시키는 GUI를 구현하려 했으나
-    - Image file을 창으로 불러내는 것이기 때문에 **cv::MouseMove**클래스를 사용하더라도 영역이 사진에 계속 그려지는 현상이 생깁니다. 
+    - Image file을 창으로 불러내는 것이기 때문에 **cv::MouseMove**클래스를 사용하더라도 <br/>
+      영역이 사진에 계속 그려지는 현상이 생깁니다. 
    ![image](https://user-images.githubusercontent.com/84891209/185293115-50d573b2-8842-460d-9149-536597dc4a64.png)
  
      

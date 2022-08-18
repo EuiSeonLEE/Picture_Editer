@@ -50,6 +50,7 @@
    </div>
    </details>
 <br/>
+
 ### 4.4 image edit [:pushpin:코드 확인](https://github.com/EuiSeonLEE/Picture_Editer/blob/041c9ff9838e3adaaeb777372650113015baf520/ScreenShot_Cut/ScreenShot_Cut.cpp#L86-L120)
 불러온 directory 내의 screenshot image를 작을 화소로도 잘 보이도록 measure value값과 그래프가 편집을 시킵니다.
 2~6개의 measure value개수를 조절하여 image를 편집합니다.

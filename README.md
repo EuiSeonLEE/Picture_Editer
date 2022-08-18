@@ -32,13 +32,13 @@
 - HIS와 HTC를 정렬하여 directory를 만들고 HTC폴더마다 oscilloscope screenshot으로 실제 Test결과 증거로 남겨둡니다.
 
 ### 4.2 directory 처리
-- 정렬된 directory의 이름을 읽어 directory 내의 image file을 읽기 위해 **cv::glob**함수를 사용합니다.
-- **cv::glob**함수를 사용하기 위해서는 directory주소를 문자열로 기입시켜야 함으로 문자열 처리를 위해 **MakeDirPath**함수를 만들어 주었습니다.
-- 문자열 처리를 하여 **cv::glob**로 해당 directory내의 image file을 전부 차례대로 불러옵니다.
+- 정렬된 directory의 이름을 읽어 directory 내의 image file을 읽기 위해 **cv::glob()**함수를 사용합니다.
+- **cv::glob()**함수를 사용하기 위해서는 directory주소를 문자열로 기입시켜야 함으로 문자열 처리를 위해 **MakeDirPath()**함수를 만들어 주었습니다.
+- 문자열 처리를 하여 **cv::glob()**로 해당 directory내의 image file을 전부 차례대로 불러옵니다.
 - 편집이 종료된 편집본 image file은 문자열을 추가하여 해당 directory 내에 편집본을 저장시킵니다.
 
 ### 4.3 MouseCallback
-- 관심영역을 선택하여 편집을 해야하기 때문에 **cv::setMouseCallback**함수를 사용하여 관심영역을 그립니다.
+- 관심영역을 선택하여 편집을 해야하기 때문에 **cv::setMouseCallback()**함수를 사용하여 관심영역을 그립니다.
 - 몇개의 measure value를 편집하느냐에 따라 관심영역 내 사각형이 몇개 그려질지 결정됩니다.
 
 ### 4.4 image edit
@@ -51,7 +51,7 @@
 
 ## 5. 핵심 트러블 슈팅
 ### 5.1 glob()함수 오류 방지
-- directory에서 image file이 존재하지 않을 경우 **cv::glob**함수는 오류 발생 동시에 프로그램을 끝내버립니다.
+- directory에서 image file이 존재하지 않을 경우 **cv::glob()**함수는 오류 발생 동시에 프로그램을 끝내버립니다.
   
     <details>
     <summary style="font-Weight : bold; font-size : 15px; color : #E43914;"> :confused: 기존 코드</summary>
@@ -73,7 +73,7 @@
     </details>
     <br/>
 
-- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 **cv::glob**함수의 오류발생을 예방합니다.
+- 이를 방지하기 위해 [access()함수](https://bubble-dev.tistory.com/entry/CC-access2)로 해당 directory내 파일 유무 검사하여 **cv::glob()**함수의 오류발생을 예방합니다.
   
   <details>
    <summary style="font-Weight : bold; font-size : 15px; color : #E43914;"> :smile: 개선된 코드 </summary>
@@ -101,3 +101,26 @@
 
 
 ## 6. 그 외 트러블 슈팅
+
+<details>
+   <summary> shallow copy(얕은 복사) & Deep copy(깊은 복사) </summary>
+   <div markdown="1"> 
+
+    - **shallow copy**를 하게 된다면 **원본의 데이터를 참조**하는 포인터 변수가 만들져 원하는 부분을 편집할 시 오류가 발생했습니다.
+    - 이를 **Deep copy**로 전환하고 아예 **새로운 데이터 만들어** 내 편집 후 다시 붙여 넣는 방식을 선택하여 오류를 방지하였습니다.
+
+   </div>
+   </details>
+<br/>
+
+<details>
+   <summary> 마우스 이동시 사각형 생성 </summary>
+   <div markdown="1"> 
+
+    - 마우스로 관심영역을 지정할 때 마우스 왼측 클릭 후 움직이면 사각형이 마우스 끝을 따라다니며 시각적으로 관심영역을 지정시키는 GUI를 구현하려 했으나
+    - Image file을 창으로 불러내는 것이기 때문에 **cv::MouseMove**클래스를 사용하더라도 영역이 사진에 계속 그려지는 현상이 생깁니다. 
+      ![image](https://user-images.githubusercontent.com/84891209/185293043-412185f7-3c2d-45ce-ac5c-5e23930503c1.png)
+
+   </div>
+   </details>
+<br/>

@@ -1,4 +1,4 @@
-﻿#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include <iostream>
 #include <iomanip>
 #include <io.h>
@@ -49,17 +49,31 @@ void onMouse(int event, int x, int y, int flags, void* param) // 마우스 콜�
 			int MakeRectCnt = 0;
 			mx2 = x;    my2 = y;       	// 사각형의 우측 하단 좌표 저장
 			if (mx1 <= mx2) {
-				while (MakeRectCnt < ValueDivideNum) {
-
-					rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
-					MakeRectCnt++;
+				if(my1 <= my2){
+					while (MakeRectCnt < ValueDivideNum) {
+						rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+						MakeRectCnt++;
+					}
+				}
+				else if(my1 > my2){
+					while (MakeRectCnt < ValueDivideNum) {
+						rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, -(my2 - my1)), Scalar(0, 255, 0), 1);
+						MakeRectCnt++;
+					}
 				}
 			}
 			else if (mx1 > mx2) {
-				while (MakeRectCnt < ValueDivideNum) {
-
-					rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
-					MakeRectCnt++;
+				if(my1 <= my2){
+					while (MakeRectCnt < ValueDivideNum) {
+						rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+						MakeRectCnt++;
+					}
+				}
+				else if(my1 > my2){
+					while (MakeRectCnt < ValueDivideNum) {
+						rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, -(my2 - my1)), Scalar(0, 255, 0), 1);
+						MakeRectCnt++;
+					}
 				}
 			}
 			cout << "mx1 = " << mx1 << " my1 = " << my1 << ", mx2 = " << mx2 << " my2 = " << my2 << endl;
@@ -73,26 +87,36 @@ void TakeValueNum(int Num) { //표시할 Value의 갯수 함수
 	Mat TEST_Graph, TEST_Value;
 	int Cnt = 0;
 	//그래프 부분 자르고 붙이기
-	TEST_Graph = ImgClone(Rect((ImgSizeCows * 4) / 16, 0, (ImgSizeCows - (ImgSizeCows * 4) / 16) - (ImgSizeCows * 2) / 16, ImgSizeRows - (ImgSizeRows - my1)));
-	resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows));
-	Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows));
+	TEST_Graph = ImgClone(Rect((ImgSizeCows * 4) / 16, 0, (ImgSizeCows - (ImgSizeCows * 4) / 16) - (ImgSizeCows * 2) / 16, ImgSizeRows - (ImgSizeRows - my1)));//그래프 부분 자르기
+	resize(TEST_Graph, TEST_Graph, Size((Img.cols * 4) / 8, Img.rows)); // 사이즈 편집
+	Mat TEST_Graph_Sub(Img, Rect(0, 0, TEST_Graph.cols, TEST_Graph.rows)); // 원본복사본에 그래프부분 붙여넣기
 	TEST_Graph.copyTo(TEST_Graph_Sub);
 	//Value 부분 자르고 붙이기
-	while (Cnt < Num) {
-		if (mx1 <= mx2) {
-			TEST_Value = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1));
+	while (Cnt < Num) {//원하는 value 갯수 만큼
+		if (mx1 <= mx2) {			
+			if(my1 <= my2){
+				TEST_Value = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1));
+			}
+			else if(my1 > my2){
+				TEST_Value = ImgClone(Rect(mx1 + (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, -(my2 - my1)));
+			}
 		}
 		else if (mx1 > mx2) {
-			TEST_Value = ImgClone(Rect(mx2 - (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1));
+			if(my1 <= my2){
+				TEST_Value = ImgClone(Rect(mx2 - (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1));
+			}
+			else if(my1 > my2){
+				TEST_Value = ImgClone(Rect(mx2 + (((mx2 - mx1) * Cnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, -(my2 - my1)));
+			}
 		}
-		resize(TEST_Value, TEST_Value, Size((Img.cols * 4) / 8, Img.rows / Num));
-		Mat TEST_Value_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * Cnt) / Num, TEST_Value.cols, TEST_Value.rows));
+		resize(TEST_Value, TEST_Value, Size((Img.cols * 4) / 8, Img.rows / Num)); //value부분 사이즈 편집
+		Mat TEST_Value_Sub(Img, Rect(TEST_Graph.cols, (Img.rows * Cnt) / Num, TEST_Value.cols, TEST_Value.rows));//원본 복사본에 value부분 붙여넣기 
 
 		TEST_Value.copyTo(TEST_Value_Sub);
 		Cnt++;
 	}
-	imshow("result4", Img);
-	imwrite(String(PathDir + "\\" + FileName + "_ScreenShot_Cut.jpg"), Img);//파일 저장						
+	imshow("result", Img);
+	imwrite(String(PathDir + "\\" + FileName + "_Screens hot_Cut.jpg"), Img);//파일 저장
 }
 
 void MakeDirPath(int FirstDir, int SecondDir) { //편집할 이미지를 읽고 쓰기 위한 주소 변환 함수
@@ -138,26 +162,39 @@ void main() {
 			//test = String("C:\\HyunBo_TEST\\" + HisName + "\\" + HtcName + "\\*.jpg");
 			//cout << Path << endl;
 			if (access(PathDir.c_str(), 0) != -1) { //디렉토리 존재여부 판단(-1이면 없는 거)
-				glob(Path, Str, false); //Path주소의 이미지 파일 주소 및 이름 저장(만약 디렉토리가 없다면 오류 걸림)
-				if (Str.size() > 0) { //해당 디렉토리 파일 개수
+				glob(Path, Str, false); //Path주소의 이미지 파일 주소 및 이름 저장(만약 디렉토리가 없다면 오류 걸림)TS
+				if (Str.size() > 0) { //해당 디렉토리의 image 파일 존재유무
 					for (int c = 0; c < Str.size(); c++) {
 						cout << Str[c] << endl;
 						Img = imread(Str[c]); //디렉토리에서 가져온 이미지 파일 읽기
 						resize(Img, Img, Size(ImgSizeCows, ImgSizeRows)); //읽어온 이미지 사이즈가 다를 수 있어 (800X547)로 통일
 						int MakeRectCnt = 0;
 						if (mx1 <= mx2) {
-
-							while (MakeRectCnt < ValueDivideNum) {
-
-								rectangle(Img, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
-								MakeRectCnt++;
+							if(my1 <= my2){
+								while (MakeRectCnt < ValueDivideNum) {
+									rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+									MakeRectCnt++;
+								}
+							}
+							else if(my1 > my2){
+								while (MakeRectCnt < ValueDivideNum) {
+									rectangle(ImgClone2, Rect(mx1 + (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, (mx2 - mx1) / ValueDivideNum, -(my2 - my1)), Scalar(0, 255, 0), 1);
+									MakeRectCnt++;
+								}
 							}
 						}
 						else if (mx1 > mx2) {
-							while (MakeRectCnt < ValueDivideNum) {
-
-								rectangle(Img, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
-								MakeRectCnt++;
+							if(my1 <= my2){
+								while (MakeRectCnt < ValueDivideNum) {
+									rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, my2 - my1), Scalar(0, 255, 0), 1);
+									MakeRectCnt++;
+								}
+							}
+							else if(my1 > my2){
+								while (MakeRectCnt < ValueDivideNum) {
+									rectangle(ImgClone2, Rect(mx2 - (((mx2 - mx1) * MakeRectCnt) / ValueDivideNum), my1, -(mx2 - mx1) / ValueDivideNum, -(my2 - my1)), Scalar(0, 255, 0), 1);
+									MakeRectCnt++;
+								}
 							}
 						}
 						imshow("Main_ScreenShot", Img);

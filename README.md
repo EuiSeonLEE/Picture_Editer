@@ -32,9 +32,9 @@
 - HIS와 HTC를 정렬하여 directory를 만들고 HTC폴더마다 oscilloscope screenshot으로 실제 Test결과 증거로 남겨둡니다.
 
 ### 4.2 directory 처리 [:pushpin:코드 확인](https://github.com/EuiSeonLEE/Picture_Editer/blob/041c9ff9838e3adaaeb777372650113015baf520/ScreenShot_Cut/ScreenShot_Cut.cpp#L122-L141)
-- 정렬된 directory 내의 image file을 읽기 위해 **cv::glob()**함수를 사용합니다.
-- **cv::glob()**함수를 사용하기 위해서는 directory주소를 문자열로 기입시켜야 함으로 문자열 처리를 위해 **MakeDirPath()**함수를 만들어 주었습니다.
-- 문자열 처리를 하여 **cv::glob()**로 해당 directory내의 image file을 전부 차례대로 불러옵니다.
+- 정렬된 directory 내의 image file을 읽기 위해 **cv::glob**함수를 사용합니다.
+- **cv::glob**함수를 사용하기 위해서는 directory주소를 문자열로 기입시켜야 함으로 문자열 처리를 위해 **MakeDirPath**함수를 만들어 주었습니다.
+- 문자열 처리를 하여 **cv::glob**로 해당 directory내의 image file을 전부 차례대로 불러옵니다.
 - 편집이 종료된 편집본 image file은 문자열을 추가하여 해당 directory 내에 편집본을 저장시킵니다.
 
 ### 4.3 MouseCallback [:pushpin:코드 확인](https://github.com/EuiSeonLEE/Picture_Editer/blob/041c9ff9838e3adaaeb777372650113015baf520/ScreenShot_Cut/ScreenShot_Cut.cpp#L21-L84)

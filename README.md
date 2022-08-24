@@ -1,6 +1,6 @@
 # :pushpin:Picture_Editer
 ## 1. 목적
-> LrCroy Corporation사의 **oscilloscope screenshot** image file를 편집하기 위한 **OpenCV_4.1.1**로 제작된 이미지 **일괄 자르기 APP**
+> LeCroy Corporation사의 **oscilloscope screenshot** image file를 편집하기 위한 **OpenCV_4.1.1**로 제작된 이미지 **일괄 자르기 APP**
 <br/>
 
 ## 2. 제작기간 & 참여인원
